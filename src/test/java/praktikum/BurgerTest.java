@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BurgerTest {
@@ -19,7 +20,7 @@ public class BurgerTest {
     private Bun bun;
 
     @Test
-    public void checkingSetBun(){
+    public void checkingSetBun() {
         Burger burger = new Burger();
         burger.setBuns(bun);
         Assert.assertNotNull(burger.bun);
@@ -84,10 +85,29 @@ public class BurgerTest {
         Mockito.when(ingredient.getType()).thenReturn(IngredientType.FILLING);
         Mockito.when(ingredient.getName()).thenReturn("dinosaur");
         Mockito.when(ingredient.getPrice()).thenReturn(300f);
-        String expectedReceipt = "(==== black bun ====)" + "\r\n" + "= filling dinosaur =" + "\r\n" + "(==== black bun ====)" + "\r\n" + "\r\n" + "Price: 900,000000\r\n";
+
+        String expectedReceipt = String.join("\r\n","(==== black bun ====)","= filling dinosaur =","(==== black bun ====)", "", "Price: 900,000000", "");
+
         String actualReceipt = burger.getReceipt();
 
-        assertEquals("Ожидаемый результат, чек " + expectedReceipt + ". Фактический результат, чек: " + actualReceipt, expectedReceipt, actualReceipt);
+        assertEquals("Ожидаемый результат, чек \r\n" + expectedReceipt + "\r\n Фактический результат, чек \r\n" + actualReceipt, expectedReceipt, actualReceipt);
+        System.out.println("ОР: " + expectedReceipt);
+        System.out.println("ФР: " + actualReceipt);
+
     }
 
+    @Test
+    public void checkingReceiptBurgerTwo(){
+        Burger burger = new Burger();
+        burger.setBuns(bun);
+        burger.addIngredient(ingredient);
+        Mockito.when(bun.getName()).thenReturn("black bun");
+        Mockito.when(bun.getPrice()).thenReturn(300f);
+        Mockito.when(ingredient.getType()).thenReturn(IngredientType.FILLING);
+        Mockito.when(ingredient.getName()).thenReturn("dinosaur");
+        Mockito.when(ingredient.getPrice()).thenReturn(300f);
+
+        assertFalse(burger.getReceipt().isEmpty());
+    }
 }
+
